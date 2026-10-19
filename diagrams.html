@@ -3,7 +3,34 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Site Diagrams</title>
+<title>Site Diagrams: Schwarzplan, Road, Transport and Parks Maps for Any Location from OpenStreetMap</title>
+<meta name="description" content="Generate architecture site analysis diagrams for any location: Schwarzplan figure-ground, 2.5D buildings, building use classification, road network, public transport, parks and walking isochrones, plus SWOT annotations. Export A3 sheets as SVG or 300 dpi PNG. Free, no sign-up.">
+<meta name="author" content="Constantine Malynin">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://siteanalysis.github.io/diagrams.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Site Analysis">
+<meta property="og:title" content="Site Diagrams: Schwarzplan, Road, Transport and Parks Maps for Any Location from OpenStreetMap">
+<meta property="og:description" content="Generate architecture site analysis diagrams for any location: Schwarzplan figure-ground, 2.5D buildings, building use classification, road network, public transport, parks and walking isochrones, plus SWOT annotations. Export A3 sheets as SVG or 300 dpi PNG. Free, no sign-up.">
+<meta property="og:url" content="https://siteanalysis.github.io/diagrams.html">
+<meta property="og:image" content="https://siteanalysis.github.io/og-diagrams.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Site Diagrams: Schwarzplan, Road, Transport and Parks Maps for Any Location from OpenStreetMap">
+<meta name="twitter:description" content="Generate architecture site analysis diagrams for any location: Schwarzplan figure-ground, 2.5D buildings, building use classification, road network, public transport, parks and walking isochrones, plus SWOT annotations. Export A3 sheets as SVG or 300 dpi PNG. Free, no sign-up.">
+<meta name="twitter:image" content="https://siteanalysis.github.io/og-diagrams.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "Site Diagrams: Schwarzplan, Roads, Transport, Parks and SWOT from OpenStreetMap",
+  "url": "https://siteanalysis.github.io/diagrams.html",
+  "description": "Generate architecture site diagrams for any location from OpenStreetMap data: Schwarzplan figure-ground, 2.5D buildings, building use classification, road network, transport, parks, walking isochrones and SWOT annotations. Export as SVG or 300 dpi PNG.",
+  "isPartOf": { "@type": "WebApplication", "name": "Site Analysis", "url": "https://siteanalysis.github.io/" },
+  "author": { "@type": "Person", "name": "Constantine Malynin", "url": "https://github.com/ConstantineMalynin" }
+}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet">
@@ -32,6 +59,7 @@
   #panel h1 { font-size: 14px; margin: 0 0 8px; }
   .credit { border-top: 1px solid var(--line); margin-top: 8px; padding-top: 8px; color: var(--muted); font-size: 11px; }
   .credit a { color: var(--muted); text-decoration: underline; }
+  #panel .sub { color: var(--muted); font-size: 12px; margin: 0 0 8px; }
   #panel header a { color: var(--accent); text-decoration: none; font-size: 12px; }
   section { border-top: 1px solid var(--line); padding: 10px 0 6px; }
   section h2 { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 0 0 8px; }
@@ -90,6 +118,7 @@
     <h1>Site Diagrams</h1>
     <a id="link3d" href="index.html">← 3D view</a>
   </header>
+  <p class="sub">Architecture site analysis diagrams for any location, generated from OpenStreetMap: Schwarzplan, buildings, roads, transport, parks and SWOT. Export as SVG or PNG.</p>
 
   <section>
     <h2>Site</h2>
