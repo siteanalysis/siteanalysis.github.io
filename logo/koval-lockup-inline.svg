@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 268 48" width="268" height="48" role="img" aria-label="Koval Site Analysis"><g transform="translate(4 4) scale(0.625)">
+<g fill="currentColor">
+  <rect x="2" y="2" width="14" height="12" rx="1.5"/>
+  <rect x="20" y="2" width="22" height="12" rx="1.5"/>
+  <rect x="46" y="2" width="16" height="20" rx="1.5"/>
+  <rect x="2" y="18" width="14" height="24" rx="1.5"/>
+  <rect x="46" y="26" width="16" height="16" rx="1.5"/>
+  <rect x="2" y="46" width="14" height="16" rx="1.5"/>
+  <rect x="20" y="48" width="22" height="14" rx="1.5"/>
+  <rect x="46" y="46" width="16" height="16" rx="1.5"/>
+</g>
+<rect x="20" y="18" width="22" height="26" rx="1.5" fill="#ff6a3d"/>
+</g><text x="56" y="32" font-family='-apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", system-ui, sans-serif' font-size="22" fill="currentColor"><tspan font-weight="700" letter-spacing="-0.3">Koval</tspan><tspan dx="8" font-weight="400" opacity="0.65">Site Analysis</tspan></text></svg>

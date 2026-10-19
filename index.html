@@ -7,6 +7,8 @@
 <meta name="description" content="Free browser-based site analysis for architects, urban designers and students. Place a 3D massing on real terrain and buildings, run a sun path and shadow study for any date, and generate Schwarzplan, road, transport and parks diagrams from OpenStreetMap. No install, no sign-up.">
 <meta name="author" content="Constantine Malynin">
 <meta name="robots" content="index, follow">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="canonical" href="https://siteanalysis.github.io/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Koval">
@@ -68,7 +70,10 @@
     overflow-y: auto; background: var(--panel); backdrop-filter: blur(8px);
     border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; box-sizing: border-box;
   }
-  #panel h1 { font-size: 14px; margin: 0 0 2px; }
+  .brand { display: flex; align-items: center; gap: 9px; margin: 0 0 6px; }
+  .brand svg { width: 28px; height: 28px; flex-shrink: 0; color: var(--text); }
+  #panel h1 { font-size: 15px; line-height: 1.1; margin: 0; font-weight: 700; }
+  #panel h1 .tag { display: block; font-size: 10px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-top: 3px; }
   #panel .sub { color: var(--muted); font-size: 12px; margin: 0 0 8px; }
   #panel .sub a { color: var(--accent); }
   section { border-top: 1px solid var(--line); padding: 10px 0 4px; }
@@ -116,7 +121,17 @@
 <div id="loading">Loading terrain and buildings…</div>
 
 <div id="panel">
-  <h1>Koval · Site Analysis</h1>
+  <div class="brand"><svg viewBox="0 0 64 64" aria-hidden="true"><g fill="currentColor">
+  <rect x="2" y="2" width="14" height="12" rx="1.5"/>
+  <rect x="20" y="2" width="22" height="12" rx="1.5"/>
+  <rect x="46" y="2" width="16" height="20" rx="1.5"/>
+  <rect x="2" y="18" width="14" height="24" rx="1.5"/>
+  <rect x="46" y="26" width="16" height="16" rx="1.5"/>
+  <rect x="2" y="46" width="14" height="16" rx="1.5"/>
+  <rect x="20" y="48" width="22" height="14" rx="1.5"/>
+  <rect x="46" y="46" width="16" height="16" rx="1.5"/>
+</g>
+<rect x="20" y="18" width="22" height="26" rx="1.5" fill="#ff6a3d"/></svg><h1>Koval <span class="tag">Site Analysis</span></h1></div>
   <p class="sub">Free 3D massing and sun path tool for architects and students. Search a place, then place your massing on real terrain and buildings. Need Schwarzplan, road or parks diagrams? Open the <a href="diagrams.html">2D diagrams</a>.</p>
 
   <section>
