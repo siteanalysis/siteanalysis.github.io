@@ -1,6 +1,6 @@
-# Site Analysis
+# Koval — Site Analysis
 
-Browser-based site analysis tools for architecture and urban design students.
+Free browser-based site analysis tools for architects, urban designers and students.
 No install, no account: open the page, search a place, and start working.
 
 **Live:** https://siteanalysis.github.io

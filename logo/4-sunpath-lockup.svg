@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 232 48" width="232" height="48" role="img" aria-label="Site Analysis">
+<g transform="translate(4 4) scale(0.625)">
+<path d="M6 46 A26 26 0 0 1 58 46" fill="none" stroke="currentColor" stroke-width="3" stroke-dasharray="1 5" stroke-linecap="round"/>
+<line x1="2" y1="46" x2="62" y2="46" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+<rect x="36" y="28" width="11" height="18" fill="currentColor"/>
+<polygon points="36,46 47,46 62,54 51,54" fill="currentColor" opacity="0.35"/>
+<circle cx="19" cy="23.5" r="6" fill="#ff6a3d"/>
+</g>
+<text x="56" y="31" font-family='-apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", system-ui, sans-serif' font-size="22" font-weight="600" letter-spacing="-0.3" fill="currentColor">Site Analysis</text>
+</svg>

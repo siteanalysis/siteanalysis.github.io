@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 232 48" width="232" height="48" role="img" aria-label="Site Analysis">
+<g transform="translate(4 4) scale(0.625)">
+<g fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round">
+  <path d="M8 36 C6 18, 28 6, 44 10 C58 14, 62 34, 52 46 C44 56, 20 60, 12 50 C8 46, 9 42, 8 36 Z"/>
+  <path d="M18 34 C17 24, 30 16, 42 19 C52 22, 52 36, 44 42 C36 48, 22 46, 18 34 Z" opacity="0.7"/>
+</g>
+<rect x="27" y="26" width="12" height="12" fill="#ff6a3d" transform="rotate(-8 33 32)"/>
+</g>
+<text x="56" y="31" font-family='-apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", system-ui, sans-serif' font-size="22" font-weight="600" letter-spacing="-0.3" fill="currentColor">Site Analysis</text>
+</svg>
