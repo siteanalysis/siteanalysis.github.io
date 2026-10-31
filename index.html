@@ -39,6 +39,7 @@
   "author": { "@type": "Person", "name": "Constantine Malynin", "url": "https://github.com/ConstantineMalynin" },
   "featureList": [
     "3D massing on terrain and OSM buildings",
+    "Upload Rhino, SketchUp (COLLADA/glTF), FBX and OBJ models",
     "Sun altitude, azimuth, sunrise and sunset for any date",
     "Shadow study by time of day",
     "Schwarzplan / figure-ground diagram",
@@ -54,6 +55,12 @@
 <link href="https://cdn.jsdelivr.net/npm/cesium@1.121.0/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/suncalc@1.9.0/suncalc.js"></script>
 <script src="config.js"></script>
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/"
+} }
+</script>
 <style>
   :root {
     --panel: rgba(22, 24, 28, 0.88);
@@ -111,6 +118,24 @@
   #hint {
     position: absolute; bottom: 36px; left: 50%; transform: translateX(-50%);
     background: var(--accent); color: #111; padding: 6px 12px; border-radius: 6px; display: none; font-weight: 600;
+  }
+  .drop {
+    display: block; border: 1px dashed var(--line); border-radius: 6px; padding: 10px; margin-bottom: 8px;
+    text-align: center; color: var(--muted); cursor: pointer;
+  }
+  .drop:hover, .drop.over { border-color: var(--accent); color: var(--text); }
+  .drop input { display: none; }
+  .drop b { color: var(--text); font-weight: 600; }
+  select {
+    background: rgba(255,255,255,.06); color: var(--text); border: 1px solid var(--line);
+    border-radius: 6px; padding: 4px 6px; font: inherit; color-scheme: dark;
+  }
+  .msg { color: var(--muted); font-size: 12px; margin: 0 0 6px; }
+  .msg.err { color: #ff8a6b; }
+  .row input:disabled { opacity: .35; }
+  #dropOverlay {
+    position: absolute; inset: 0; display: none; place-items: center; pointer-events: none;
+    background: rgba(255,106,61,.12); border: 3px dashed var(--accent); font-size: 18px; font-weight: 600;
   }
   #loading { position: absolute; inset: 0; display: grid; place-items: center; color: var(--muted); pointer-events: none; }
   @media (max-width: 600px) { #panel { width: calc(100% - 24px); max-height: 45%; } }
@@ -175,6 +200,26 @@
   </section>
 
   <section>
+    <h2>Design model</h2>
+    <label class="drop" id="dropZone">
+      <input type="file" id="modelFile" multiple>
+      <b>Upload model</b> or drop it on the map<br>
+      <span style="font-size:11px">glTF · COLLADA · FBX · OBJ · Rhino 3DM · STL · 3DS · PLY</span>
+    </label>
+    <p class="msg" id="modelMsg">From SketchUp, export COLLADA (.dae) or glTF. Rhino .3dm files load directly. Add .bin, .mtl and texture files in the same selection.</p>
+    <div id="modelOpts" hidden>
+      <div class="row"><label>Units</label>
+        <select id="modelUnits"><option value="mm">Millimetres</option><option value="cm">Centimetres</option><option value="m">Metres</option><option value="in">Inches</option><option value="ft">Feet</option></select>
+      </div>
+      <div class="row"><label>Up axis</label>
+        <select id="modelUp"><option value="z">Z up (Rhino, SketchUp)</option><option value="y">Y up</option></select>
+      </div>
+      <div class="row"><label>Tint</label><input type="checkbox" id="modelTint"><span class="msg" style="margin:0">massing orange</span></div>
+      <div class="btns"><button id="modelRemove">Remove model</button></div>
+    </div>
+  </section>
+
+  <section>
     <h2>Sun &amp; shadows</h2>
     <div class="row"><label>Date</label><input type="date" id="date"></div>
     <div class="btns">
@@ -196,6 +241,7 @@
   <footer class="credit">Koval · built by <a href="https://github.com/ConstantineMalynin" target="_blank" rel="noopener">Constantine Malynin</a> · <a href="https://github.com/siteanalysis/siteanalysis.github.io" target="_blank" rel="noopener">source</a></footer>
 </div>
 <div id="hint"></div>
+<div id="dropOverlay">Drop model to place it on the site</div>
 
 <script>
 const $ = (id) => document.getElementById(id);
@@ -366,13 +412,21 @@ function createMassing() {
   });
 }
 
+// Box sliders, or the bounding box of an uploaded model.
+const massingDims = () => (design ? { ...massingCfg, ...design.size } : massingCfg);
+
 function updateMassing() {
-  const { w, d, h, rot, fh } = massingCfg;
+  const { w, d, h, rot, fh } = massingDims();
   const center = Cesium.Cartesian3.fromDegrees(site.lon, site.lat, site.h + h / 2);
   const hpr = new Cesium.HeadingPitchRoll(CMath.toRadians(rot), 0, 0);
   massing.position = center;
   massing.orientation = Cesium.Transforms.headingPitchRollQuaternion(center, hpr);
   massing.box.dimensions = new Cesium.Cartesian3(w, d, h);
+  massing.show = !design;
+  if (design?.model) {
+    const base = Cesium.Cartesian3.fromDegrees(site.lon, site.lat, site.h);
+    design.model.modelMatrix = Cesium.Transforms.headingPitchRollToFixedFrame(base, hpr);
+  }
 
   // Footprint corners in local east-north frame, rotated by heading (clockwise from north).
   const enu = Cesium.Transforms.eastNorthUpToFixedFrame(Cesium.Cartesian3.fromDegrees(site.lon, site.lat, site.h));
@@ -384,7 +438,7 @@ function updateMassing() {
   massingFootprint.polygon.hierarchy = new Cesium.PolygonHierarchy(corners);
 
   const floors = Math.max(1, Math.floor(h / fh));
-  $('sFoot').textContent = fmt(w * d) + ' m²';
+  $('sFoot').textContent = fmt(w * d) + ' m²' + (design ? ' (bbox)' : '');
   $('sFloors').textContent = floors;
   $('sGfa').textContent = fmt(w * d * floors) + ' m²';
   $('sElev').textContent = site.h.toFixed(1) + ' m';
@@ -400,9 +454,101 @@ async function setSite(lon, lat) {
   updateSun();
 }
 
+// --- Design model ----------------------------------------------------------
+// design = { source, size, model } once a file is loaded; source is the raw three.js object
+// so units and up axis can be changed without re-reading the file.
+let design = null, modelLib, modelSeq = 0;
+
+async function loadModelFiles(files) {
+  if (!files.length) return;
+  const seq = ++modelSeq;
+  modelMessage('Reading ' + files[0].name + '…');
+  try {
+    modelLib ||= await import('./js/model.js');
+    const read = await modelLib.readModel(files);
+    if (seq !== modelSeq) return;
+    $('modelUnits').value = read.units;
+    $('modelUp').value = read.up;
+    design = { source: read.object, name: read.name, size: null, model: null };
+    await rebuildModel();
+  } catch (err) {
+    console.error(err);
+    if (seq === modelSeq) modelMessage(err.message, true);
+  }
+}
+
+async function rebuildModel() {
+  const seq = ++modelSeq;
+  modelMessage('Placing ' + design.name + '…');
+  const { glb, size } = await modelLib.buildGlb(design.source, { units: $('modelUnits').value, up: $('modelUp').value });
+  // A fresh blob URL per build: Cesium caches glTF by URL, so a reused source would show the old model.
+  const url = URL.createObjectURL(new Blob([glb], { type: 'model/gltf-binary' }));
+  const model = await Cesium.Model.fromGltfAsync({ url, shadows: Cesium.ShadowMode.ENABLED });
+  model.readyEvent.addEventListener(() => URL.revokeObjectURL(url));
+  if (seq !== modelSeq || !design) return model.destroy();
+  if (design.model) viewer.scene.primitives.remove(design.model);
+  design.model = viewer.scene.primitives.add(model);
+  design.size = size;
+  applyModelTint();
+  updateMassing();
+  for (const key of ['w', 'd', 'h']) $(key).disabled = true;
+  $('modelOpts').hidden = false;
+  const tall = size.h > 1000 ? ' Looks too big? Check the units.' : size.h < 2 ? ' Looks too small? Check the units.' : '';
+  modelMessage(`${design.name}: ${size.w.toFixed(1)} × ${size.d.toFixed(1)} × ${size.h.toFixed(1)} m.${tall}`);
+}
+
+function removeModel() {
+  modelSeq++;
+  if (design?.model) viewer.scene.primitives.remove(design.model);
+  design = null;
+  for (const key of ['w', 'd', 'h']) $(key).disabled = false;
+  $('modelOpts').hidden = true;
+  $('modelFile').value = '';
+  modelMessage('Model removed. Back to the box massing.');
+  updateMassing();
+}
+
+function applyModelTint() {
+  const m = design?.model;
+  if (!m) return;
+  const on = $('modelTint').checked;
+  m.color = on ? Cesium.Color.fromCssColorString('#ff6a3d') : Cesium.Color.WHITE;
+  m.colorBlendMode = on ? Cesium.ColorBlendMode.MIX : Cesium.ColorBlendMode.HIGHLIGHT;
+  m.colorBlendAmount = 0.6;
+}
+
+function modelMessage(text, error = false) {
+  $('modelMsg').textContent = text;
+  $('modelMsg').classList.toggle('err', error);
+}
+
+function bindModelUpload() {
+  $('modelFile').accept = '.glb,.gltf,.bin,.dae,.fbx,.obj,.mtl,.3dm,.stl,.3ds,.ply,.skp,image/*';
+  $('modelFile').addEventListener('change', (e) => loadModelFiles(e.target.files));
+  $('modelUnits').addEventListener('change', () => design && rebuildModel().catch((err) => modelMessage(err.message, true)));
+  $('modelUp').addEventListener('change', () => design && rebuildModel().catch((err) => modelMessage(err.message, true)));
+  $('modelTint').addEventListener('change', applyModelTint);
+  $('modelRemove').addEventListener('click', removeModel);
+
+  // Drop anywhere on the page; the overlay shows while a file is dragged over.
+  let depth = 0;
+  const overlay = $('dropOverlay');
+  const hasFiles = (e) => [...e.dataTransfer.types].includes('Files');
+  window.addEventListener('dragenter', (e) => { if (hasFiles(e)) { depth++; overlay.style.display = 'grid'; } });
+  window.addEventListener('dragleave', () => { if (--depth <= 0) { depth = 0; overlay.style.display = 'none'; } });
+  window.addEventListener('dragover', (e) => { if (hasFiles(e)) e.preventDefault(); });
+  window.addEventListener('drop', (e) => {
+    if (!hasFiles(e)) return;
+    e.preventDefault();
+    depth = 0;
+    overlay.style.display = 'none';
+    loadModelFiles(e.dataTransfer.files);
+  });
+}
+
 // --- Camera ----------------------------------------------------------------
 function flyTo(kind) {
-  const center = Cesium.Cartesian3.fromDegrees(site.lon, site.lat, site.h + massingCfg.h / 2);
+  const center = Cesium.Cartesian3.fromDegrees(site.lon, site.lat, site.h + massingDims().h / 2);
   const sphere = new Cesium.BoundingSphere(center, 50);
   const presets = {
     persp: new Cesium.HeadingPitchRange(CMath.toRadians(30), CMath.toRadians(-35), 550),
@@ -451,6 +597,7 @@ function togglePlay() {
 // --- UI --------------------------------------------------------------------
 function bindUI() {
   bindSearch();
+  bindModelUpload();
 
   for (const key of ['w', 'd', 'h', 'rot', 'fh']) {
     const input = $(key);
@@ -483,8 +630,9 @@ function bindUI() {
   $('viewTop').addEventListener('click', () => flyTo('top'));
   $('viewStreet').addEventListener('click', () => flyTo('street'));
   $('diagramsBtn').addEventListener('click', () => {
-    const { w, d, h, rot } = massingCfg;
-    const p = new URLSearchParams({ lat: site.lat.toFixed(6), lon: site.lon.toFixed(6), w, d, h, rot });
+    const { w, d, h, rot } = massingDims();
+    const r = (n) => Math.round(n * 10) / 10;
+    const p = new URLSearchParams({ lat: site.lat.toFixed(6), lon: site.lon.toFixed(6), w: r(w), d: r(d), h: r(h), rot });
     location.href = `diagrams.html?${p}`;
   });
   $('goCoords').addEventListener('click', goToCoords);

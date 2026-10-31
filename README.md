@@ -44,6 +44,7 @@ Early-stage site analysis usually means a day of GIS exports, CAD clean-up and s
 - **Search** any city, address or place, or paste coordinates
 - **Place a massing** with a click, then tune width, depth, height, rotation and floor height with sliders
 - **Live metrics:** footprint, floor count, gross floor area and ground elevation
+- **Upload your design model** (glTF, COLLADA, FBX, OBJ, Rhino 3DM, STL, 3DS or PLY) by picking or dropping files. Units and up axis are read from the file where possible and can be overridden. SketchUp users export COLLADA or glTF, since `.skp` can't be read in a browser
 - **Hide and restore** neighbouring buildings to test a cleared site
 - **Camera presets:** perspective, top-down and street level
 - **Sun and shadows** for any date and time, with one-click equinox and solstice dates and a UTC offset
